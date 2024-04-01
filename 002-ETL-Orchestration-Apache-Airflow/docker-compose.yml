@@ -1,0 +1,13 @@
+version: '3'
+services:
+  mds-airflow-container:
+    image: mds-airflow:latest
+
+    volumes:
+      - ./airflow:/opt/airflow
+
+    ports:
+      - "8080:8080"
+
+    command: airflow standalone
+

@@ -1,0 +1,33 @@
+# Use official apache airflow image as base image to build our custom image
+FROM apache/airflow:latest
+
+# define the user (so the privelegies)
+# root: a superuser
+USER root
+
+# Below instructions are executed in the privileges of root USER
+# 1. update the available packages & clean cache of packages already downloaded
+RUN apt-get update && \
+    apt-get clean
+
+# 2. install the `python3-venv` package. It is used
+#    to create Python virtual environments
+RUN apt-get install -y python3-venv
+
+# 3. create a virtual environment named: venv and locate it in `/opt/` folder
+RUN python3 -m venv /opt/venv
+
+# 4. sets the `PATH` environment variable
+#    It adds the /opt/venv/bin directory to the beginning of the PATH variable
+#    ensuring that executables located in that directory take precedence 
+#    when commands are executed in the Docker container
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 5. activate the virtual environment
+SHELL ["/bin/bash", "-c", "source /opt/venv/bin/activate"]
+
+# 6. install pandas, openpyxl, xlrd
+RUN /opt/venv/bin/pip install pandas openpyxl xlrd
+
+USER airflow
+
