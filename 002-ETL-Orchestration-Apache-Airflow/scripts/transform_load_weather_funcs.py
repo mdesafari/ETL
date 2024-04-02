@@ -43,8 +43,7 @@ def transform_load_data(task_instance):
     wind_speed = data["wind"]["speed"]
 
     # calculates the timestamp of the weather record, sunrise time, and sunset time
-    # I deliberately introduced an error in `time_of_record = datetime...`
-    time_of_record = datetime.fromtimestamp(data['dt'] + data['timezone'], tz=datetime.timezone.utc)
+    time_of_record = datetime.fromtimestamp(data['dt'] + data['timezone'])
     sunrise_time = datetime.fromtimestamp(data['sys']['sunrise'] + data['timezone'])
     sunset_time = datetime.fromtimestamp(data['sys']['sunset'] + data['timezone'])
 
