@@ -1,0 +1,31 @@
+# Use official apache airflow image as base image to build our custom image
+FROM apache/airflow:latest
+
+# define the user
+USER root
+
+# 1. update the available packages & clean cache of packages already downloaded
+RUN apt-get update && \
+    apt-get clean
+
+# 2. install the `python3-venv` package. It is used to create Python virtual environments
+RUN apt-get install -y python3-venv
+
+# 3. create a virtual environment named: venv and locate it in `/opt/` folder
+RUN python3 -m venv /opt/venv
+
+# 4. sets the `PATH` environment variable
+ENV PATH="/opt/venv/bin:$PATH"
+
+# 5. activate the virtual environment
+SHELL ["/bin/bash", "-c", "source /opt/venv/bin/activate"]
+
+# 6. install pandas, openpyxl, xlrd
+RUN /opt/venv/bin/pip install pandas openpyxl xlrd
+
+# 7. now, set the user to airflow
+USER airflow
+
+# 8. then, install apache-airflow-providers-postgres (airflow provider for postgres)
+RUN pip install apache-airflow-providers-postgres
+

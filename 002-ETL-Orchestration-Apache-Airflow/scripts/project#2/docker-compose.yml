@@ -1,0 +1,33 @@
+version: '3'
+services:
+  mds-airflow-container:
+    image: mds-airflow:latest
+
+    volumes:
+      - ./airflow:/opt/airflow
+
+    ports:
+      - "8080:8080"
+
+    command: airflow standalone
+  
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: weather
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      timeout: 30s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  postgres-db-volume:
+
